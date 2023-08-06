@@ -1,6 +1,7 @@
 package com.example.pdfreader;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.widget.Toast;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnPdfFileSelectListener{
 
     private PdfAdapter pdfAdapter;
     private List<File> pdfList;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        
         runtimePermission();
     }
 
@@ -77,8 +79,12 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         pdfList = new ArrayList<>();
         pdfList.addAll(findPdf(Environment.getExternalStorageDirectory()));
-        pdfAdapter = new PdfAdapter(this, pdfList);
+        pdfAdapter = new PdfAdapter(this, pdfList,this);
         recyclerView.setAdapter(pdfAdapter);
     }
 
+    @Override
+    public void onPdfSelected(File file) {
+        startActivity(new Intent(MainActivity.this, DocumentActivity.class).putExtra("path",file.getAbsolutePath()));
+    }
 }
